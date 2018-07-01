@@ -37,7 +37,7 @@ def index():
             #print(collection)
             #if(int(collection)==2018):
                 year=int(collection)
-                header=["car","price"+str(year+1),"price"+str(year+2),"price"+str(year+3),"price"+str(year+4),"price"+str(year+5),"price5yeartotal","src"]
+                header=["car","price"+str(year),"price"+str(year+1),"price"+str(year+2),"price"+str(year+3),"price"+str(year+4),"price"+str(year+5),"price5yeartotal","src"]
                 cursor=db[collection].find({},{"brand":1,"model":1,"cash_price":1,"depreciation":1})
                 with open(str(collection)+".csv", 'w') as outfile:
                     writer = csv.writer(outfile, lineterminator='\n')
@@ -46,11 +46,13 @@ def index():
                         car_detail=[]
                         car_detail.append(item["brand"].title()+item["model"].replace("-","").upper())
                         total_dep=0
+                        #Initial depriciation is zero
+                        car_detail.append(0)
                         for d in item["depreciation"]:
                             total_dep=total_dep+returnNumber(d,0)
                             dep= round(1 - ((returnNumber(item["cash_price"],0)-total_dep)/returnNumber(item["cash_price"],1)),2)
                             car_detail.append(dep)
-                        car_detail.append("assets/data/"+item["brand"]+".png")
+                        car_detail.append("assets/data/images/"+item["brand"]+".png")
                         print(car_detail)
                         writer.writerow(car_detail)
 
