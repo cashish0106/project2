@@ -83,10 +83,27 @@ def index():
                     line_dict[str(dep_year)].append(dep)
             
             with open(str(collection)+'_line.csv', 'w') as csv_file:
-                writer = csv.writer(csv_file)
-                for key, value in line_dict.items():
+                writer = csv.writer(csv_file, lineterminator='\n')
+                for key,value in line_dict.items():
                     writer.writerow(value)
         #print(line_dict)
+    ###below code is to generate files for scatter plot
+    #collections = db.collection_names(include_system_collections=False)
+    for collection in collections:
+        if(isNumber(collection)):
+            year=int(collection)
+            header=["car","year","cash_price","true_cost"]
+            cursor=db[collection].find({},{"brand":1,"model":1,"cash_price":1,"owning_cost":1})
+            with open(str(collection)+"_scatter.csv", 'w') as outfile:
+                writer = csv.writer(outfile, lineterminator='\n')
+                writer.writerow(header)
+                for item in cursor:
+                    car_scatter=[]
+                    car_scatter.append(item["brand"].title()+item["model"].replace("-","").upper())
+                    car_scatter.append(year)
+                    car_scatter.append(item["cash_price"])
+                    car_scatter.append(item["owning_cost"])
+                    writer.writerow(car_scatter)
     
 
 
