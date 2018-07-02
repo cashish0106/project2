@@ -21,15 +21,39 @@ def returnNumber(nmb,numtoreturn):
         return int(nmb)
     except ValueError:
         return numtoreturn
-t="2014"
-c=db[t].aggregate([{ 
-  "$group": {
-    "_id": "null", 
-    "avg_price": { "$count": "$cash_price" } 
-  } 
-}])
-for cx in c:
-    print(cx)
+
+collections = db.collection_names(include_system_collections=False)
+for collection in collections:
+    if(isNumber(collection)):
+        year=int(collection)
+        line_dict={}
+        line_dict["header"]=["Year"]
+        line_dict[str(year)]=[]
+        line_dict[str(year)].append(year)
+        for i in range(1,7):
+           # print(year+i)
+            line_dict[str(year+i)]=[]
+            line_dict[str(year+i)].append(year+i)
+        cursor=db[collection].find({},{"brand":1,"model":1,"cash_price":1,"depreciation":1})
+        for item in cursor:
+            line_dict["header"].append(item["brand"].title()+item["model"].replace("-","").upper())
+            
+            line_dict[str(year)].append((returnNumber(item["cash_price"],0)))
+            total_dep=0
+            dep_year=year
+            for d in item["depreciation"]:
+                total_dep=total_dep+returnNumber(d,0)
+                dep_year=dep_year+1
+                dep= returnNumber(item["cash_price"],0)-total_dep
+                line_dict[str(dep_year)].append(dep)
+        
+        with open(str(collection)+'_line.csv', 'w') as csv_file:
+            writer = csv.writer(csv_file)
+            for key, value in line_dict.items():
+                writer.writerow(value)
+        #print(line_dict)
+
+
 def depreciation():
     collections = db.collection_names(include_system_collections=False)
     for collection in collections:
