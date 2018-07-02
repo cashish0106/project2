@@ -26,53 +26,53 @@ def returnNumber(nmb,numtoreturn):
 
 if not os.path.exists("CSVFiles"):
     os.makedirs("CSVFiles")
-
-collections = db.collection_names(include_system_collections=False)
-for collection in collections:
-    if(isNumber(collection)):
-    #if(collection=="2018"):
-        year=int(collection)
-        cursor=db[collection].find({},{"brand":1,"model":1,"depreciation":1,"taxes":1,"financing":1,"fuel":1,"insurance":1,"maintenance":1,"repairs":1})
-        for item in cursor:
-            car_dict={}
-            car_dict["header"]=["Year","depreciation","taxes","financing","fuel","insurance","maintenance","repairs"]
-            for i in range(1,7):
-                car_dict[str(year+i)]=[]
-                car_dict[str(year+i)].append(year+i)
-            filename = str(year)+item["brand"].title()+item["model"].replace("-","").upper()+".csv"
-            d_year=year
-            for d in item["depreciation"]:
-                d_year+=1
-                car_dict[str(d_year)].append(returnNumber(d,0))
-            t_year=year
-            for t in item["taxes"]:
-                t_year+=1
-                car_dict[str(t_year)].append(returnNumber(t,0))
-            f_year=year
-            for f in item["financing"]:
-                f_year+=1
-                car_dict[str(f_year)].append(returnNumber(f,0))
-            fu_year=year
-            for fu in item["fuel"]:
-                fu_year+=1
-                car_dict[str(fu_year)].append(returnNumber(fu,0))
-            i_year=year
-            for i in item["insurance"]:
-                i_year+=1
-                car_dict[str(i_year)].append(returnNumber(i,0))
-            m_year=year
-            for m in item["maintenance"]:
-                m_year+=1
-                car_dict[str(m_year)].append(returnNumber(m,0))
-            r_year=year
-            for r in item["repairs"]:
-                r_year+=1
-                car_dict[str(r_year)].append(returnNumber(r,0))
-    
-            with open("CSVFiles/"+filename, 'w') as csv_file:
-                writer = csv.writer(csv_file, lineterminator='\n')
-                for key, value in car_dict.items():
-                    writer.writerow(value)
+def generatefiles():
+    collections = db.collection_names(include_system_collections=False)
+    for collection in collections:
+        if(isNumber(collection)):
+        #if(collection=="2018"):
+            year=int(collection)
+            cursor=db[collection].find({},{"brand":1,"model":1,"depreciation":1,"taxes":1,"financing":1,"fuel":1,"insurance":1,"maintenance":1,"repairs":1})
+            for item in cursor:
+                car_dict={}
+                car_dict["header"]=["Year","depreciation","taxes","financing","fuel","insurance","maintenance","repairs"]
+                for i in range(1,7):
+                    car_dict[str(year+i)]=[]
+                    car_dict[str(year+i)].append(year+i)
+                filename = str(year)+item["brand"].title()+item["model"].replace("-","").upper()+".csv"
+                d_year=year
+                for d in item["depreciation"]:
+                    d_year+=1
+                    car_dict[str(d_year)].append(returnNumber(d,0))
+                t_year=year
+                for t in item["taxes"]:
+                    t_year+=1
+                    car_dict[str(t_year)].append(returnNumber(t,0))
+                f_year=year
+                for f in item["financing"]:
+                    f_year+=1
+                    car_dict[str(f_year)].append(returnNumber(f,0))
+                fu_year=year
+                for fu in item["fuel"]:
+                    fu_year+=1
+                    car_dict[str(fu_year)].append(returnNumber(fu,0))
+                i_year=year
+                for i in item["insurance"]:
+                    i_year+=1
+                    car_dict[str(i_year)].append(returnNumber(i,0))
+                m_year=year
+                for m in item["maintenance"]:
+                    m_year+=1
+                    car_dict[str(m_year)].append(returnNumber(m,0))
+                r_year=year
+                for r in item["repairs"]:
+                    r_year+=1
+                    car_dict[str(r_year)].append(returnNumber(r,0))
+        
+                with open("CSVFiles/"+filename, 'w') as csv_file:
+                    writer = csv.writer(csv_file, lineterminator='\n')
+                    for key, value in car_dict.items():
+                        writer.writerow(value)
 
 
 

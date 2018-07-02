@@ -55,7 +55,7 @@ def index():
                             dep= round(1 - ((returnNumber(item["cash_price"],0)-total_dep)/returnNumber(item["cash_price"],1)),2)
                             car_detail.append(dep)
                         car_detail.append("assets/data/images/"+item["brand"]+".png")
-                        print(car_detail)
+                        #print(car_detail)
                         writer.writerow(car_detail)
 
     #############Logic for Line graph. Generating new CSV as "_line"
@@ -120,7 +120,10 @@ def index():
                 car_dict["header"]=["Year","depreciation","taxes","financing","fuel","insurance","maintenance","repairs"]
                 for i in range(1,7):
                     car_dict[str(year+i)]=[]
-                    car_dict[str(year+i)].append(year+i)
+                    if(i==6):
+                        car_dict[str(year+i)].append("Total")
+                    else:
+                        car_dict[str(year+i)].append(year+i)
                 filename = str(year)+item["brand"].title()+item["model"].replace("-","").upper()+".csv"
                 d_year=year
                 for d in item["depreciation"]:
